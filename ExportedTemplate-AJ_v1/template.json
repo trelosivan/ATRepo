@@ -1,0 +1,675 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_AJWBAP_name": {
+            "defaultValue": "AJWBAP",
+            "type": "String"
+        },
+        "vaults_AJKeyVlt_name": {
+            "defaultValue": "AJKeyVlt",
+            "type": "String"
+        },
+        "virtualNetworks_AJVNet_name": {
+            "defaultValue": "AJVNet",
+            "type": "String"
+        },
+        "serverfarms_AJWBAPServPlan_name": {
+            "defaultValue": "AJWBAPServPlan",
+            "type": "String"
+        },
+        "components_AJWBAPInsight_name": {
+            "defaultValue": "AJWBAPInsight",
+            "type": "String"
+        },
+        "applicationGateways_AJAPPGWY_name": {
+            "defaultValue": "AJAPPGWY",
+            "type": "String"
+        },
+        "publicIPAddresses_AJAPGWPUBIP_name": {
+            "defaultValue": "AJAPGWPUBIP",
+            "type": "String"
+        },
+        "storageAccounts_j67xr4l3gqaesstorage_name": {
+            "defaultValue": "j67xr4l3gqaesstorage",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2015-05-01",
+            "name": "[parameters('components_AJWBAPInsight_name')]",
+            "location": "westeurope",
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Request_Source": "IbizaWebAppExtensionCreate"
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2016-10-01",
+            "name": "[parameters('vaults_AJKeyVlt_name')]",
+            "location": "westeurope",
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "cf19077f-6e9c-47d8-9929-173ba1068b67",
+                "accessPolicies": [
+                    {
+                        "tenantId": "cf19077f-6e9c-47d8-9929-173ba1068b67",
+                        "objectId": "3070a745-d592-4aa8-b81e-5b43ac0323a6",
+                        "permissions": {
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "certificates": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "ManageContacts",
+                                "ManageIssuers",
+                                "GetIssuers",
+                                "ListIssuers",
+                                "SetIssuers",
+                                "DeleteIssuers"
+                            ]
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": true
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('publicIPAddresses_AJAPGWPUBIP_name')]",
+            "location": "westeurope",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "20288681-8f4c-476d-bbbc-565a834709f0",
+                "ipAddress": "51.105.205.160",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('virtualNetworks_AJVNet_name')]",
+            "location": "westeurope",
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "daa9ce34-7562-4c99-8c61-e48e6c8c4be8",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "172.16.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "AJAPGWSUB",
+                        "etag": "W/\"ddd154e7-d035-4076-b7b0-0db6ed86168a\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "172.16.1.0/24",
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "default",
+                        "etag": "W/\"ddd154e7-d035-4076-b7b0-0db6ed86168a\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "172.16.0.0/24",
+                            "serviceEndpoints": [
+                                {
+                                    "provisioningState": "Succeeded",
+                                    "service": "Microsoft.Storage",
+                                    "locations": [
+                                        "westeurope",
+                                        "northeurope"
+                                    ]
+                                },
+                                {
+                                    "provisioningState": "Succeeded",
+                                    "service": "Microsoft.KeyVault",
+                                    "locations": [
+                                        "*"
+                                    ]
+                                }
+                            ],
+                            "delegations": [
+                                {
+                                    "name": "d088c9980ba444fb94ee9cd2780131b5",
+                                    "etag": "W/\"ddd154e7-d035-4076-b7b0-0db6ed86168a\"",
+                                    "properties": {
+                                        "serviceName": "Microsoft.Web/serverFarms",
+                                        "actions": [
+                                            "Microsoft.Network/virtualNetworks/subnets/action"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('serverfarms_AJWBAPServPlan_name')]",
+            "location": "West Europe",
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "properties": {
+                "name": "[parameters('serverfarms_AJWBAPServPlan_name')]",
+                "perSiteScaling": false,
+                "reserved": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2016-10-01",
+            "name": "[concat(parameters('vaults_AJKeyVlt_name'), '/AJSecret')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_AJKeyVlt_name'))]"
+            ],
+            "properties": {
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('virtualNetworks_AJVNet_name'), '/AJAPGWSUB')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_AJVNet_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "172.16.1.0/24",
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('virtualNetworks_AJVNet_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_AJVNet_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "172.16.0.0/24",
+                "serviceEndpoints": [
+                    {
+                        "provisioningState": "Succeeded",
+                        "service": "Microsoft.Storage",
+                        "locations": [
+                            "westeurope",
+                            "northeurope"
+                        ]
+                    },
+                    {
+                        "provisioningState": "Succeeded",
+                        "service": "Microsoft.KeyVault",
+                        "locations": [
+                            "*"
+                        ]
+                    }
+                ],
+                "delegations": [
+                    {
+                        "name": "d088c9980ba444fb94ee9cd2780131b5",
+                        "etag": "W/\"ddd154e7-d035-4076-b7b0-0db6ed86168a\"",
+                        "properties": {
+                            "serviceName": "Microsoft.Web/serverFarms",
+                            "actions": [
+                                "Microsoft.Network/virtualNetworks/subnets/action"
+                            ]
+                        }
+                    }
+                ],
+                "privateEndpointNetworkPolicies": "Enabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[parameters('storageAccounts_j67xr4l3gqaesstorage_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'default')]"
+            ],
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "isHnsEnabled": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'default')]",
+                            "action": "Allow",
+                            "state": "Succeeded"
+                        }
+                    ],
+                    "ipRules": [
+                        {
+                            "value": "46.177.174.53",
+                            "action": "Allow"
+                        }
+                    ],
+                    "defaultAction": "Deny"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2019-04-01",
+            "name": "[concat(parameters('storageAccounts_j67xr4l3gqaesstorage_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_j67xr4l3gqaesstorage_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "name": "[parameters('sites_AJWBAP_name')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_AJWBAPServPlan_name'))]"
+            ],
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "kind": "app",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "ajwbap.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "ajwbap.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_AJWBAPServPlan_name'))]",
+                "reserved": false,
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_AJWBAP_name'), '/web')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_AJWBAP_name'))]"
+            ],
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "pythonVersion": "",
+                "nodeVersion": "",
+                "linuxFxVersion": "",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2017",
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$AJWBAP",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": true,
+                "appCommandLine": "",
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": true,
+                        "virtualDirectories": null
+                    }
+                ],
+                "winAuthAdminState": 0,
+                "winAuthTenantState": 0,
+                "customAppPoolIdentityAdminState": false,
+                "customAppPoolIdentityTenantState": false,
+                "loadBalancing": "LeastRequests",
+                "routingRules": [],
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetName": "cde4d064-5193-4f6f-9e47-eece2e26f4ab_default",
+                "siteAuthEnabled": false,
+                "siteAuthSettings": {
+                    "enabled": null,
+                    "unauthenticatedClientAction": null,
+                    "tokenStoreEnabled": null,
+                    "allowedExternalRedirectUrls": null,
+                    "defaultProvider": null,
+                    "clientId": null,
+                    "clientSecret": null,
+                    "clientSecretCertificateThumbprint": null,
+                    "issuer": null,
+                    "allowedAudiences": null,
+                    "additionalLoginParams": null,
+                    "isAadAutoProvisioned": false,
+                    "googleClientId": null,
+                    "googleClientSecret": null,
+                    "googleOAuthScopes": null,
+                    "facebookAppId": null,
+                    "facebookAppSecret": null,
+                    "facebookOAuthScopes": null,
+                    "twitterConsumerKey": null,
+                    "twitterConsumerSecret": null,
+                    "microsoftAccountClientId": null,
+                    "microsoftAccountClientSecret": null,
+                    "microsoftAccountOAuthScopes": null
+                },
+                "localMySqlEnabled": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0,
+                "fileChangeAuditEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_AJWBAP_name'), '/', parameters('sites_AJWBAP_name'), '.azurewebsites.net')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_AJWBAP_name'))]"
+            ],
+            "properties": {
+                "siteName": "AJWBAP",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('applicationGateways_AJAPPGWY_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'AJAPGWSUB')]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_AJAPGWPUBIP_name'))]"
+            ],
+            "tags": {
+                "CreatedUsing": "Azure Portal"
+            },
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "71cee85d-0991-434e-a32f-17766a39bbef",
+                "sku": {
+                    "name": "Standard_v2",
+                    "tier": "Standard_v2"
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "appGatewayIpConfig",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'AJAPGWSUB')]"
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+                    }
+                ],
+                "sslCertificates": [],
+                "trustedRootCertificates": [],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "appGwPublicFrontendIp",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_AJAPGWPUBIP_name'))]"
+                            }
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "port_80",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "port": 80
+                        },
+                        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "AJAPGWBACKPOOL",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "backendAddresses": [
+                                {
+                                    "fqdn": "ajwbap.azurewebsites.net"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+                    }
+                ],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "AJHTTPSetting",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "port": 80,
+                            "protocol": "Http",
+                            "cookieBasedAffinity": "Disabled",
+                            "pickHostNameFromBackendAddress": false,
+                            "requestTimeout": 20
+                        },
+                        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+                    }
+                ],
+                "httpListeners": [
+                    {
+                        "name": "AJLIstener",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_AJAPPGWY_name')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
+                            },
+                            "frontendPort": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_AJAPPGWY_name')), '/frontendPorts/port_80')]"
+                            },
+                            "protocol": "Http",
+                            "requireServerNameIndication": false
+                        },
+                        "type": "Microsoft.Network/applicationGateways/httpListeners"
+                    }
+                ],
+                "urlPathMaps": [],
+                "requestRoutingRules": [
+                    {
+                        "name": "AJAPGWRULES",
+                        "etag": "W/\"cfaf60c1-d815-4ecf-8780-199d92a303d4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_AJAPPGWY_name')), '/httpListeners/AJLIstener')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_AJAPPGWY_name')), '/backendAddressPools/AJAPGWBACKPOOL')]"
+                            },
+                            "backendHttpSettings": {
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_AJAPPGWY_name')), '/backendHttpSettingsCollection/AJHTTPSetting')]"
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+                    }
+                ],
+                "probes": [],
+                "rewriteRuleSets": [],
+                "redirectConfigurations": [],
+                "enableHttp2": false,
+                "autoscaleConfiguration": {
+                    "minCapacity": 2,
+                    "maxCapacity": 10
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/virtualNetworkConnections",
+            "apiVersion": "2016-08-01",
+            "name": "[concat(parameters('sites_AJWBAP_name'), '/cde4d064-5193-4f6f-9e47-eece2e26f4ab_default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_AJWBAP_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'default')]"
+            ],
+            "properties": {
+                "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_AJVNet_name'), 'default')]",
+                "certThumbprint": "E421E7B8AEAADE7EFAF4F4174F5DD9BA35D4C7BD",
+                "certBlob": "MIIEYTCCA02gAwIBAgIQimU/+M5874FGLj5zSrJxaTAJBgUrDgMCHQUAMIGLMYGIMIGFBgNVBAMefgBXAGUAYgBzAGkAdABlAHMAQwBlAHIAdABpAGYAaQBjAGEAdABlAGMAZABlADQAZAAwADYANAAtADUAMQA5ADMALQA0AGYANgBmAC0AOQBlADQANwAtAGUAZQBjAGUAMgBlADIANgBmADQAYQBiAF8AZABlAGYAYQB1AGwAdDAeFw0xOTA4MTYwODAxMzhaFw0zOTEyMzEyMzU5NTlaMIGLMYGIMIGFBgNVBAMefgBXAGUAYgBzAGkAdABlAHMAQwBlAHIAdABpAGYAaQBjAGEAdABlAGMAZABlADQAZAAwADYANAAtADUAMQA5ADMALQA0AGYANgBmAC0AOQBlADQANwAtAGUAZQBjAGUAMgBlADIANgBmADQAYQBiAF8AZABlAGYAYQB1AGwAdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANliH5OhiQ4/ptHzROtNx2BOE9GHWhfq5S+jigSls692o7hRJ2pQj7ynOOIr608eQFw2LzrbvZ/uyuobs9wdTHuIgsgHkvXOSncj/lXsvg+XGkbr+xgY4aKD2JSOsCiwD8kSNiY/ccT7NmLmthHQZVY8vk+7gInXJqiOlBzL6w6KCpJNrTvpo7Wk3Mcb6+YxAgZLZok/8279udylCgtATRAojxwg//IvmfXM3zj0RUQEE0Y/df9zX5/K2aWkXbDUnvJrqrSL66ZTWrFyWInlJC5jsQDN5/DJXkgsL3hj1QQ17F22Z86YvrHuXooXzoKh0fme+TR+9w0e07QKUB/7bgECAwEAAaOBxjCBwzCBwAYDVR0BBIG4MIG1gBAUVfLgQTrmd1zPyzNZXGKYoYGOMIGLMYGIMIGFBgNVBAMefgBXAGUAYgBzAGkAdABlAHMAQwBlAHIAdABpAGYAaQBjAGEAdABlAGMAZABlADQAZAAwADYANAAtADUAMQA5ADMALQA0AGYANgBmAC0AOQBlADQANwAtAGUAZQBjAGUAMgBlADIANgBmADQAYQBiAF8AZABlAGYAYQB1AGwAdIIQimU/+M5874FGLj5zSrJxaTAJBgUrDgMCHQUAA4IBAQAOpM7k8cbWPxIyeBAXSU6bxp5zw/THK6r8dP7Gkx9tjMHyFugwQaVciQIFDAKhVaYSGJX2tCfhxhXawbYgeq2CKRc1w6wNSvEtEKLjmWVq8eGrukY94yVi+ILFrhk4i4ajYcrBkuGPPukdZ0Pb5xwqYNAAKkNR5xGVwKQzn4hhAGHXYAO51jSHK8dM4SPA9k4BzJxufBNGhzs2HnGuSZdO7SF9StRSu3VujEzDB4Zz2oAgzzbbLllxaisfiWq0prtr4y6MpUpDiCQELfq8IN8YpTS74shjNK6HZH7ZXaidmhIANIg15qErAdZVmf7HRUbVwVeJU6nP3yfsPJJLXgaF",
+                "resyncRequired": false,
+                "isSwift": false
+            }
+        }
+    ]
+}

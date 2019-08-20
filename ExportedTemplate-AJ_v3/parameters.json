@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_AJWEBAP_name": {
+            "value": null
+        },
+        "vaults_AJKEYVLT_name": {
+            "value": null
+        },
+        "serverfarms_AJWBAPSRVPLN_name": {
+            "value": null
+        },
+        "virtualNetworks_AJVNET_name": {
+            "value": null
+        },
+        "publicIPAddresses_AJPUBIP_name": {
+            "value": null
+        },
+        "components_AJWBAPINSIGHTS_name": {
+            "value": null
+        },
+        "applicationGateways_AJWBAPGWAY_name": {
+            "value": null
+        },
+        "storageAccounts_j67xr4l3gqaesstorage_name": {
+            "value": null
+        }
+    }
+}
